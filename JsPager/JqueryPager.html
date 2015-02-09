@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="Scripts/ajax-pager.js"></script>
+    <script src="Scripts/jquery-1.9.0.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            loadData(1, 10);
+
+            //分页条点击事件
+            $(document.body).on('click', '.pageNav', function() {
+                var pageSize = Number(getQueryString('pageSize', $(this).attr('href')));
+                var pageIndex = Number(getQueryString('pageIndex', $(this).attr('href')));
+                loadData(pageIndex, pageSize);
+                return false; //不跳转页面
+            });
+        });
+
+        //加载数据
+        function loadData(pageIndex, pageSize) {
+            $.getJSON('Content/CustomersData.txt', { pageIndex: pageIndex, pageSize: pageSize }, function (data) {
+                var beginIndex = (pageIndex - 1) * pageSize;
+                var endIndex = pageIndex * pageSize - 1;
+                var tbodyHtml = '';
+                for (var i = beginIndex; i < endIndex; i++) {
+                    if (!data.Rows[i]) {
+                        break;
+                    }
+                    var tbody = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td><';
+                    //tbody += '<td>{6}</td><td>{7}</td><td>{8}</td><td>{9}</td><td>{10}</td></tr>';
+                    tbody = tbody.format(data.Rows[i].CustomerID, data.Rows[i].CompanyName, data.Rows[i].ContactName,
+                        data.Rows[i].ContactTitle, data.Rows[i].Address);
+                    tbodyHtml += tbody;
+                }
+                $('#tb').find('tbody').first().html(tbodyHtml);
+                var pageCount = parseInt((data.Total / pageSize)) + (data.Total % pageSize ? 1 : 0);
+                $('#dvPager').html(pager(pageSize, pageIndex, pageCount, 'CustomersData.txt'));
+            }
+            );
+        }
+
+        //字符串格式化
+        String.prototype.format = function (args) {
+            var result = this;
+            var reg;
+            if (arguments.length > 0) {
+                if (arguments.length == 1 && typeof (args) == "object") {
+                    for (var key in args) {
+                        if (args[key] !== undefined) {
+                            reg = new RegExp("({" + key + "})", "g");
+                            result = result.replace(reg, args[key]);
+                        }
+                    }
+                } else {
+                    for (var i = 0; i < arguments.length; i++) {
+                        if (arguments[i] !== undefined) {
+                            reg = new RegExp("({)" + i + "(})", "g");
+                            result = result.replace(reg, arguments[i]);
+                        }
+                    }
+                }
+            }
+            return result;
+        };
+
+        //获取url参数
+        function getQueryString(name, url) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            url = url && url.indexOf('?') >= 0 ? url.substring(url.indexOf('?'), url.length) : window.location.search;
+            var r = url.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    </script>
+    <style type="text/css">
+        /*分页条样式*/
+         a{color:#000;text-decoration:none;}
+        .clearfix:after {clear: both;content: ".";display: block;font-size: 0;height: 0;line-height: 0;visibility: hidden;}
+        .fr{float:none;}
+        .page a{padding:6px 12px;border:1px solid #ddd;float:left;margin-left:-1px;color:#006dae;text-align:center;}
+        .page a:hover{background:#ddd;}
+        .page a.current{background:#006dae;color:#fff;border:1px solid #006dae;cursor: default;}
+        .page .first{margin-right:10px;}
+        .pageinfo{margin-left:10px;padding:6px 12px;border:1px solid #ddd;float:left;color:#006dae;text-align:center;}
+    </style>
+</head>
+<body>
+    <table id="tb" class="table table-striped">
+        <thead>
+            <tr>
+                <th width="90px;">CustomerID</th>
+                <th width="240px;">CompanyName</th>
+                <th width="130px;">ContactName</th>
+                <th width="140px;">ContactTitle</th>
+                <th width="205px;">Address</th>
+                <!--<th width="90px;">City</th>
+                <th width="50px;">Region</th>
+                <th width="80px;">PostalCode</th>
+                <th width="80px;">Country</th>
+                <th width="95px;">Phone</th>
+                <th width="95px;">Fax</th>-->
+            </tr>
+        </thead>
+        <tbody></tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5">
+                    <div id="dvPager" class="page fr clearfix" style="margin: 10px 0 15px;"></div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

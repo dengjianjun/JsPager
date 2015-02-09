@@ -1,0 +1,5 @@
+D:\DotNet\Code\JsPager\JsPager\bin\JsPager.dll
+D:\DotNet\Code\JsPager\JsPager\bin\JsPager.pdb
+D:\DotNet\Code\JsPager\JsPager\obj\Debug\JsPager.csprojResolveAssemblyReference.cache
+D:\DotNet\Code\JsPager\JsPager\obj\Debug\JsPager.dll
+D:\DotNet\Code\JsPager\JsPager\obj\Debug\JsPager.pdb

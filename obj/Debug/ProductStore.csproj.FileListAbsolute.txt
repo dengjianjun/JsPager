@@ -1,0 +1,1 @@
+D:\DotNet\Code\JsPager\obj\Debug\ProductStore.csprojResolveAssemblyReference.cache

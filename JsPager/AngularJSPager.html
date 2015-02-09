@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body ng-app="myApp" ng-controller="customerController">
+    <div class="container">
+
+        <h3>Customers</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>CustomerID</th>
+                    <th>CompanyName</th>
+                    <th>ContactName</th>
+                    <th>ContactTitle</th>
+                    <th>Address</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="customer in customers">
+                    <td>{{ customer.CustomerID }}</td>
+                    <td>{{ customer.CompanyName }}</td>
+                    <td>{{ customer.ContactName }}</td>
+                    <td>{{ customer.ContactTitle }}</td>
+                    <td>{{ customer.Address }}</td>
+                    <td>{{ customer.City }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div ng-bind-html="navigator | to_trusted"></div>
+    </div>
+    <script src="Scripts/jquery-1.9.0.js"></script>
+    <script src="Scripts/angular.js"></script>
+    <script src="Scripts/ajax-pager.js"></script>
+    <script src="Scripts/customers.js"></script>
+</body>
+</html>

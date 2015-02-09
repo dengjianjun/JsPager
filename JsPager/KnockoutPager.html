@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="Scripts/jquery-1.9.0.js"></script>
+    <script src="Scripts/knockout-2.2.0.js"></script>
+    <script src="Scripts/ajax-pager.js"></script>
+    <script type="text/javascript">
+        function ViewModel() {
+            var self = this;
+            self.navigator = ko.observable();
+            self.customers = ko.observableArray([]);
+            self.total = ko.observable(0);
+            //self.
+            self.goToPage = function(pageIndex, pageSize) {
+                $.getJSON('Content/CustomersData.txt', { pageIndex: pageIndex, pageSize: pageSize }, function(data) {
+                    var beginIndex = (pageIndex - 1) * pageSize;
+                    var endIndex = pageIndex * pageSize - 1;
+                    for (var i = beginIndex; i < endIndex; i++) {
+                        if (!data.Rows[i]) {
+                            break;
+                        }
+                        self.customers.push(data.Rows[i]);
+                    }
+                    debugger;
+                    var pageCount = parseInt((data.Total / pageSize)) + (data.Total % pageSize ? 1 : 0);
+                    self.total = data.Total; //pageCount;
+                    self.navigator = pager(pageSize, pageIndex, 'Content/CustomersData.txt');
+                });
+            };
+        }
+
+        $(function () {
+            var vm = new ViewModel();
+            vm.goToPage(1, 10);
+            ko.applyBindings(vm);
+        });
+
+        function loadData(pageIndex, pageSize) {
+            $.getJSON('Content/CustomersData.txt', { pageIndex: pageIndex, pageSize: pageSize }, function (data) {
+                var beginIndex = (pageIndex - 1) * pageSize;
+                var endIndex = pageIndex * pageSize - 1;
+                var tbody = [];
+
+                for (var i = beginIndex; i < endIndex; i++) {
+                    if (!data.Rows[i]) {
+                        break;
+                    }
+                    tbody.push(data.Rows[i]);
+                }
+                var pageCount = parseInt((data.Total / pageSize)) + (data.Total % pageSize ? 1 : 0);
+                return { data: tbody, total: pageCount };
+            });
+        }
+    </script>
+</head>
+<body>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>CustomerID</th>
+                <th>CompanyName</th>
+                <th>ContactName</th>
+                <th>ContactTitle</th>
+                <th>Address</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody data-bind="foreach: customers">
+            <tr>
+                <td><span data-bind="text: CustomerID"></span></td>
+                <td><span data-bind="text: CompanyName"></span></td>
+                <td><span data-bind="text: ContactName"></span></td>
+                <td><span data-bind="text: ContactTitle"></span></td>
+                <td><span data-bind="text: Address"></span></td>
+                <td><span data-bind="text: City"></span></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td rowspan="6"><span data-bind="text: total"></span></td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>
